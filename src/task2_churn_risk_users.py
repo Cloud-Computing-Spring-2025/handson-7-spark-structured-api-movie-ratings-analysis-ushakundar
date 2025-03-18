@@ -27,10 +27,12 @@ def identify_churn_risk_users(df):
     Identify users with canceled subscriptions and low watch time (<100 minutes).
 
     TODO: Implement the following steps:
-    1. Filter users where `SubscriptionStatus = 'Canceled'` AND `WatchTime < 100`.
+    1. Filter users where SubscriptionStatus = 'Canceled' AND WatchTime < 100.
     2. Count the number of such users.
     """
-    pass  # Remove this line after implementation
+    churn_risk_users = df.filter((col("SubscriptionStatus") == "Canceled") & (col("WatchTime") < 100))
+    result = churn_risk_users.agg(count("UserID").alias("ChurnRiskUsers"))
+    return result
 
 def write_output(result_df, output_path):
     """
@@ -44,8 +46,8 @@ def main():
     """
     spark = initialize_spark()
 
-    input_file = "/workspaces/MovieRatingsAnalysis/input/movie_ratings_data.csv"
-    output_file = "/workspaces/MovieRatingsAnalysis/outputs/churn_risk_users.csv"
+    input_file = "/workspaces/handson-7-spark-structured-api-movie-ratings-analysis-ushakundar/input/movie_ratings_data.csv"
+    output_file = "/workspaces/handson-7-spark-structured-api-movie-ratings-analysis-ushakundar/outputs/churn_risk_users.csv"
 
     df = load_data(spark, input_file)
     result_df = identify_churn_risk_users(df)  # Call function here
